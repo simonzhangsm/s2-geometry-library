@@ -6,8 +6,8 @@ using std::max;
 using std::swap;
 using std::reverse;
 
-#include <hash_map>
-using __gnu_cxx::hash_map;
+#include <unordered_map>
+using std::unordered_map;
 
 #include <set>
 using std::set;
@@ -29,8 +29,6 @@ using std::vector;
 #include "s2latlngrect.h"
 #include "s2polygonbuilder.h"
 #include "s2polyline.h"
-
-DECLARE_bool(s2debug);  // defined in s2.cc
 
 static const unsigned char kCurrentEncodingVersionNumber = 1;
 
@@ -107,8 +105,8 @@ S2Polygon::~S2Polygon() {
 
 typedef pair<S2Point, S2Point> S2PointPair;
 
-#include<hash_set>
-namespace __gnu_cxx {
+#include <unordered_set>
+namespace std {
 
 template<> struct hash<S2PointPair> {
   size_t operator()(S2PointPair const& p) const {
@@ -117,13 +115,13 @@ template<> struct hash<S2PointPair> {
   }
 };
 
-}  // namespace __gnu_cxx
+}  // namespace std
 
 
 bool S2Polygon::IsValid(const vector<S2Loop*>& loops) {
   // If a loop contains an edge AB, then no other loop may contain AB or BA.
   if (loops.size() > 1) {
-    hash_map<S2PointPair, pair<int, int> > edges;
+    unordered_map<S2PointPair, pair<int, int> > edges;
     for (int i = 0; i < loops.size(); ++i) {
       S2Loop* lp = loops[i];
       for (int j = 0; j < lp->num_vertices(); ++j) {
@@ -134,7 +132,7 @@ bool S2Polygon::IsValid(const vector<S2Loop*>& loops) {
             continue;
         }
         pair<int, int> other = edges[key];
-        VLOG(2) << "Duplicate edge: loop " << i << ", edge " << j
+        VLOG(2, NULL) << "Duplicate edge: loop " << i << ", edge " << j
                  << " and loop " << other.first << ", edge " << other.second;
         return false;
       }
@@ -145,14 +143,14 @@ bool S2Polygon::IsValid(const vector<S2Loop*>& loops) {
   // two loops cross.
   for (int i = 0; i < loops.size(); ++i) {
     if (!loops[i]->IsNormalized()) {
-      VLOG(2) << "Loop " << i << " encloses more than half the sphere";
+      VLOG(2, NULL) << "Loop " << i << " encloses more than half the sphere";
       return false;
     }
     for (int j = i + 1; j < loops.size(); ++j) {
       // This test not only checks for edge crossings, it also detects
       // cases where the two boundaries cross at a shared vertex.
       if (loops[i]->ContainsOrCrosses(loops[j]) < 0) {
-        VLOG(2) << "Loop " << i << " crosses loop " << j;
+        VLOG(2, NULL) << "Loop " << i << " crosses loop " << j;
         return false;
       }
     }
@@ -850,10 +848,10 @@ vector<S2Point>* SimplifyLoopAsPolyline(S2Loop const* loop, S1Angle tolerance) {
   if (indices.size() <= 2) return NULL;
   // Add them all except the last: it is the same as the first.
   vector<S2Point>* simplified_line = new vector<S2Point>(indices.size() - 1);
-  VLOG(4) << "Now simplified to: ";
+  VLOG(4, NULL) << "Now simplified to: ";
   for (int i = 0; i + 1 < indices.size(); ++i) {
     (*simplified_line)[i] = line.vertex(indices[i]);
-    VLOG(4) << S2LatLng(line.vertex(indices[i]));
+    VLOG(4, NULL) << S2LatLng(line.vertex(indices[i]));
   }
   return simplified_line;
 }

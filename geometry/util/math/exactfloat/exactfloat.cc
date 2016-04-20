@@ -2,20 +2,25 @@
 
 #include "util/math/exactfloat/exactfloat.h"
 #include <cstring>
-
+#include <cmath>
 #include <math.h>
 #include <algorithm>
+
 using std::min;
 using std::max;
 using std::swap;
 using std::reverse;
+using std::signbit;
+using std::signbit;
+using std::isnan;
+using std::isinf;
 
 #include <limits>
 using std::numeric_limits;
 
 #include "base/integral_types.h"
 #include "base/logging.h"
-#include "openssl/crypto.h"
+#include <openssl/crypto.h>
 
 // Define storage for constants.
 const int ExactFloat::kMinExp;

@@ -13,8 +13,8 @@ using std::reverse;
 #include <functional>
 using std::less;
 
-#include <hash_set>
-using __gnu_cxx::hash_set;
+#include <unordered_set>
+using std::unordered_set;
 
 #include <queue>
 using std::priority_queue;
@@ -115,7 +115,7 @@ S2RegionCoverer::Candidate* S2RegionCoverer::NewCandidate(S2Cell const& cell) {
     size += sizeof(Candidate*) << max_children_shift();
   }
   Candidate* candidate = static_cast<Candidate*>(malloc(size));
-  memset(candidate, 0, size);
+  memset((void *)candidate, 0, size);
   candidate->cell = cell;
   candidate->is_terminal = is_terminal;
   ++candidates_created_counter_;
@@ -192,7 +192,7 @@ void S2RegionCoverer::AddCandidate(Candidate* candidate) {
                        + candidate->num_children) << max_children_shift())
                      + num_terminals);
     pq_->push(make_pair(priority, candidate));
-    VLOG(2) << "Push: " << candidate->cell.id() << " (" << priority << ") ";
+    VLOG(2, NULL) << "Push: " << candidate->cell.id() << " (" << priority << ") ";
   }
 }
 
@@ -256,7 +256,7 @@ void S2RegionCoverer::GetCoveringInternal(S2Region const& region) {
          (!interior_covering_ || result_->size() < max_cells_)) {
     Candidate* candidate = pq_->top().second;
     pq_->pop();
-    VLOG(2) << "Pop: " << candidate->cell.id();
+    VLOG(2, NULL) << "Pop: " << candidate->cell.id();
     if (candidate->cell.level() < min_level_ ||
         candidate->num_children == 1 ||
         result_->size() + (interior_covering_ ? 0 : pq_->size()) +
@@ -273,7 +273,7 @@ void S2RegionCoverer::GetCoveringInternal(S2Region const& region) {
       AddCandidate(candidate);
     }
   }
-  VLOG(2) << "Created " << result_->size() << " cells, " <<
+  VLOG(2, NULL) << "Created " << result_->size() << " cells, " <<
       candidates_created_counter_ << " candidates created, " <<
       pq_->size() << " left";
   while (!pq_->empty()) {
@@ -322,7 +322,7 @@ void S2RegionCoverer::GetInteriorCellUnion(S2Region const& region,
 
 void S2RegionCoverer::FloodFill(
     S2Region const& region, S2CellId const& start, vector<S2CellId>* output) {
-  hash_set<S2CellId> all;
+  unordered_set<S2CellId> all;
   vector<S2CellId> frontier;
   output->clear();
   all.insert(start);

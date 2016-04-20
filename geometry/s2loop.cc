@@ -1,5 +1,5 @@
 // Copyright 2005 Google Inc. All Rights Reserved.
-
+#include <sstream>
 #include <algorithm>
 using std::min;
 using std::max;
@@ -13,8 +13,8 @@ using std::multiset;
 #include <vector>
 using std::vector;
 
-#include <hash_map>
-using __gnu_cxx::hash_map;
+#include <unordered_map>
+using std::unordered_map;
 
 #include <utility>
 using std::pair;
@@ -32,8 +32,6 @@ using std::make_pair;
 #include "s2edgeindex.h"
 
 static const unsigned char kCurrentEncodingVersionNumber = 1;
-
-DECLARE_bool(s2debug);  // defined in s2.cc
 
 S2Point const* S2LoopIndex::edge_from(int index) const {
   return &loop_->vertex(index);
@@ -97,21 +95,21 @@ void S2Loop::Init(vector<S2Point> const& vertices) {
 bool S2Loop::IsValid() const {
   // Loops must have at least 3 vertices.
   if (num_vertices() < 3) {
-    VLOG(2) << "Degenerate loop";
+    VLOG(2, NULL) << "Degenerate loop";
     return false;
   }
   // All vertices must be unit length.
   for (int i = 0; i < num_vertices(); ++i) {
     if (!S2::IsUnitLength(vertex(i))) {
-      VLOG(2) << "Vertex " << i << " is not unit length";
+      VLOG(2, NULL) << "Vertex " << i << " is not unit length";
       return false;
     }
   }
-  // Loops are not allowed to have any duplicate vertices.
-  hash_map<S2Point, int> vmap;
+  /// Loops are not allowed to have any duplicate vertices.
+  unordered_map<S2Point, int> vmap;
   for (int i = 0; i < num_vertices(); ++i) {
     if (!vmap.insert(make_pair(vertex(i), i)).second) {
-      VLOG(2) << "Duplicate vertices: " << vmap[vertex(i)] << " and " << i;
+      VLOG(2, NULL) << "Duplicate vertices: " << vmap[vertex(i)] << " and " << i;
       return false;
     }
   }
@@ -134,9 +132,9 @@ bool S2Loop::IsValid() const {
         crosses = crosser.RobustCrossing(&vertex(ai+1)) > 0;
         previous_index = ai + 1;
         if (crosses) {
-          VLOG(2) << "Edges " << i << " and " << ai << " cross";
+          VLOG(2, NULL) << "Edges " << i << " and " << ai << " cross";
           // additional debugging information:
-          VLOG(2) << "Edge locations in degrees: "
+          VLOG(2, NULL) << "Edge locations in degrees: "
                   << S2LatLng(vertex(i)) << "-" << S2LatLng(vertex(i+1))
                   << " and "
                   << S2LatLng(vertex(ai)) << "-" << S2LatLng(vertex(ai+1));
@@ -275,15 +273,20 @@ int S2Loop::FindVertex(S2Point const& p) const {
 }
 
 
-bool S2Loop::IsNormalized() const {
-  // Optimization: if the longitude span is less than 180 degrees, then the
-  // loop covers less than half the sphere and is therefore normalized.
+bool S2Loop::IsNormalized(std::stringstream *msg) const {
+  /// Optimization: if the longitude span is less than 180 degrees, then the
+  /// loop covers less than half the sphere and is therefore normalized.
   if (bound_.lng().GetLength() < M_PI) return true;
 
-  // We allow some error so that hemispheres are always considered normalized.
-  // TODO(user): This might not be necessary once S2Polygon is enhanced so
-  // that it does not require its input loops to be normalized.
-  return GetTurningAngle() >= -1e-14;
+  /// We allow some error so that hemispheres are always considered normalized.
+  /// TODO(user): This might not be necessary once S2Polygon is enhanced so
+  /// that it does not require its input loops to be normalized.
+  double turningAngle = GetTurningAngle();
+  if (turningAngle < -1e-14 && msg) {
+      (*msg) << "Polygons cannot be larger than a hemisphere";
+  }
+
+  return turningAngle >= -1e-14;
 }
 
 void S2Loop::Normalize() {

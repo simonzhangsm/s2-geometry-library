@@ -76,12 +76,6 @@ using std::make_pair;
 #include "s2regioncoverer.h"
 
 
-DEFINE_bool(always_recurse_on_children, false,
-            "When we test a query edge against a cell, we don't "
-            "recurse if there are only a few test edges in it.  "
-            "For testing, it is useful to always recurse to the end.  "
-            "You don't want to use this flag anywhere but in tests.");
-
 void S2EdgeIndex::Reset() {
   minimum_s2_level_used_ = S2CellId::kMaxLevel;
   index_computed_ = false;
@@ -284,7 +278,7 @@ void S2EdgeIndex::GetEdgesInChildrenCells(
       }
     }
   }
-  VLOG(1) << "Num cells traversed: " << num_cells;
+  VLOG(1, NULL) << "Num cells traversed: " << num_cells;
 }
 
 // Appends to "candidate_crossings" all edge references which may cross the

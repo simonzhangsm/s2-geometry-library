@@ -15,11 +15,11 @@
 #include <functional>
 using std::less;
 
-#include <hash_map>
-using __gnu_cxx::hash_map;
+#include <unordered_map>
+using std::unordered_map;
 
-#include <hash_set>
-using __gnu_cxx::hash_set;
+#include <unordered_set>
+using std::unordered_set;
 
 #include <set>
 using std::set;
@@ -47,7 +47,6 @@ using std::vector;
 #include <ctype.h>      // not needed, but removing it will break the build
 
 using namespace std;
-using namespace __gnu_cxx;
 
 // A buffer size which is large enough for all the FastToBuffer functions, as
 // well as DoubleToBuffer and FloatToBuffer.  We define this here in case other
@@ -65,10 +64,9 @@ static const int kFastToBufferSize =       32;
 #include "stringprintf.h"
 #include "base/stl_decl.h"
 #include "base/port.h"
-#include "endian.h"
+//#include "endian.h"
 
 // ----------------------------------------------------------------------
-// FpToString()
 // FloatToString()
 // IntToString()
 // Int64ToString()
@@ -79,7 +77,6 @@ static const int kFastToBufferSize =       32;
 //    represented in 16 hex digits.
 // ----------------------------------------------------------------------
 
-string FpToString(Fprint fp);
 string FloatToString(float f, const char* format);
 string IntToString(int i, const char* format);
 string Int64ToString(int64 i64, const char* format);
