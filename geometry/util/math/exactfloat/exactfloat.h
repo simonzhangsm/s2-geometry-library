@@ -106,7 +106,7 @@ using std::string;
 
 #include "base/logging.h"
 #include "base/integral_types.h"
-#include <openssl/bn.h>
+#include "openssl/bn.h"
 
 class ExactFloat {
  public:

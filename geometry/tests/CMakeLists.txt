@@ -1,10 +1,15 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
-#if (NOT EXISTS "${GTEST_DIR}/googletest/CMakeLists.txt")
-#	message(FATAL_ERROR "Cannot find googletest directory.")
-#endif()
+if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/CMakeLists.txt")
+	message(FATAL_ERROR "Cannot find googletest directory.")
+endif()
 
-find_package(OpenSSL REQUIRED)                          
+IF ( NOT OPENSSL_INCLUDE_DIR OR NOT OPENSSL_LIBRARIES)
+    find_package(OpenSSL REQUIRED)
+ENDIF()
+
+message("OpenSSL include dir: ${OPENSSL_INCLUDE_DIR}")
+message("OpenSSL libraries dir: ${OPENSSL_LIBRARIES}")
 
 include_directories(
 	../s2
@@ -18,7 +23,6 @@ add_library(gtest STATIC googletest/googletest/src/gtest-all.cc)
 target_link_libraries(gtest pthread)
 
 add_library(gtest_main STATIC googletest/googletest/src/gtest_main.cc)
-
 target_link_libraries(gtest_main gtest pthread)
 
 set(tests_files
@@ -51,7 +55,7 @@ set(tests_files
 add_executable(tests ${tests_files})
 set_property(TARGET tests PROPERTY CXX_STANDARD 11)
 set_property(TARGET tests PROPERTY CXX_STANDARD_REQUIRED ON)
-target_link_libraries(tests s2 s2util s2cellid gtest_main pthread ${OPENSSL_LIBRARIES})
+target_link_libraries(tests s2 s2util s2cellid gtest_main pthread -lcrypto)
 
 add_custom_target(check COMMAND tests)
 

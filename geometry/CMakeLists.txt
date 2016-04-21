@@ -5,24 +5,17 @@ add_definitions(-DS2_USE_EXACTFLOAT -DHASH_NAMESPACE=std)
 set_property(GLOBAL PROPERTY CXX_STANDARD 11)
 set_property(GLOBAL PROPERTY CXX_STANDARD_REQUIRED ON)
 
-set(LIB_FLAG, "STATIC")
-
-find_package(OpenSSL REQUIRED)
+IF ( NOT OPENSSL_INCLUDE_DIR OR NOT OPENSSL_LIBRARIES )
+    find_package(OpenSSL REQUIRED)
+ENDIF()
 
 message("OpenSSL include dir: ${OPENSSL_INCLUDE_DIR}")
-message("OpenSSL libraries: ${OPENSSL_LIBRARIES}")
+message("OpenSSL libraries dir: ${OPENSSL_LIBRARIES}")
 
-#if ("${CXX_VERSION_FLAG}" STREQUAL "")
-#  message(FATAL_ERROR "No CXX_VERSION Flag set!!")
-#endif()
+ADD_DEFINITIONS (-Wno-deprecated-declarations -Wno-conversion -DNDEBUG)
 
-#ADD_DEFINITIONS (-Wno-deprecated-declarations -Wno-conversion -DNDEBUG ${CXX_VERSION_FLAG})
-
-include_directories(
-	s2
-	.
-	${OPENSSL_INCLUDE_DIR}
-)
+INCLUDE_DIRECTORIES( ${OPENSSL_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( s2 . )
 
 set(s2util_files
 	base/int128.cc
@@ -76,24 +69,42 @@ file(GLOB UTIL_HASH_HEADERS util/hash/*.h)
 file(GLOB UTIL_MATH_EXF_HEADERS util/math/exactfloat/*.h)
 file(GLOB UTIL_MATH_HEADERS util/math/*.h)
 
-add_library(s2util ${LIB_FLAG} ${s2util_files})
+add_library(s2util STATIC ${s2util_files})
 target_link_libraries(s2util ${OPENSSL_LIBRARIES})
 
-add_library(s2cellid ${LIB_FLAG} ${s2cellid_files})
-target_link_libraries(s2cellid s2util)
+add_library(s2util.dy SHARED ${s2util_files})
+target_link_libraries(s2util.dy ${OPENSSL_LIBRARIES})
+SET_TARGET_PROPERTIES(s2util.dy PROPERTIES OUTPUT_NAME "s2util") 
+SET_TARGET_PROPERTIES(s2util PROPERTIES CLEAN_DIRECT_OUTPUT 1) 
+SET_TARGET_PROPERTIES(s2util.dy PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
-add_library(s2 ${LIB_FLAG} ${s2_files})
+add_library(s2cellid STATIC ${s2cellid_files})
+target_link_libraries(s2cellid s2util ${OPENSSL_LIBRARIES})
+
+add_library(s2cellid.dy SHARED ${s2cellid_files})
+target_link_libraries(s2cellid.dy s2util.dy ${OPENSSL_LIBRARIES})
+SET_TARGET_PROPERTIES(s2cellid.dy PROPERTIES OUTPUT_NAME "s2cellid") 
+SET_TARGET_PROPERTIES(s2cellid PROPERTIES CLEAN_DIRECT_OUTPUT 1) 
+SET_TARGET_PROPERTIES(s2cellid.dy PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+
+add_library(s2 STATIC ${s2_files})
 target_link_libraries(s2 s2cellid s2util pthread ${OPENSSL_LIBRARIES})
 
-install(TARGETS s2util s2cellid s2
+add_library(s2.dy SHARED ${s2_files})
+target_link_libraries(s2.dy s2cellid.dy s2util.dy pthread ${OPENSSL_LIBRARIES})
+SET_TARGET_PROPERTIES(s2.dy PROPERTIES OUTPUT_NAME "s2") 
+SET_TARGET_PROPERTIES(s2 PROPERTIES CLEAN_DIRECT_OUTPUT 1) 
+SET_TARGET_PROPERTIES(s2.dy PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+
+install(TARGETS s2util s2cellid s2 s2util.dy s2cellid.dy s2.dy
 	LIBRARY DESTINATION lib
 	ARCHIVE DESTINATION lib
 )   
 
-install(FILES ${S2_HEADERS} DESTINATION        			include/s2)                     
-install(FILES ${BASE_HEADERS} DESTINATION           include/s2/base)                
-install(FILES ${STR_HEADERS} DESTINATION        		include/s2/strings)             
+install(FILES ${S2_HEADERS} DESTINATION    		include/s2)                     
+install(FILES ${BASE_HEADERS} DESTINATION      		include/s2/base)                
+install(FILES ${STR_HEADERS} DESTINATION        	include/s2/strings)             
 install(FILES ${UTIL_CODE_HEADERS} DESTINATION     	include/s2/util/coding)         
-install(FILES ${UTIL_ENDIAN_HEADERS} DESTINATION    include/s2/util/endian)         
-install(FILES ${UTIL_MATH_HEADERS} DESTINATION      include/s2/util/math)           
+install(FILES ${UTIL_ENDIAN_HEADERS} DESTINATION    	include/s2/util/endian)         
+install(FILES ${UTIL_MATH_HEADERS} DESTINATION      	include/s2/util/math)           
 install(FILES ${UTIL_MATH_EXF_HEADERS} DESTINATION 	include/s2/util/math/exactfloat)

@@ -6,9 +6,9 @@ echo "## Building and installing libs2..."
 rm -rf build
 mkdir build
 cd build 
-cmake ../geometry
+cmake -DCMAKE_INSTALL_PREFIX=./install ../geometry
 make -j3
-sudo make install
+make install
 
 if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
 	sudo ldconfig -v | grep libs2
