@@ -10,7 +10,6 @@ using std::multimap;
 #include <vector>
 using std::vector;
 
-
 #include "base/basictypes.h"
 #include "base/macros.h"
 #include "s2.h"
@@ -75,12 +74,12 @@ class S2Polygon : public S2Region {
 
   // Return true if the given loops form a valid polygon.  Assumes that
   // all of the given loops have already been validated.
-  static bool IsValid(const vector<S2Loop*>& loops);
+  static bool IsValid(const vector<S2Loop*>& loops, std::ostringstream *msg = NULL);
 
   // Return true if this is a valid polygon.  Note that in debug mode,
   // validity is checked at polygon creation time, so IsValid() should always
   // return true.
-  bool IsValid() const;
+  bool IsValid(std::ostringstream *msg = NULL) const;
 
   // DEPRECATED.
   bool IsValid(bool check_loops, int max_adjacent) const;

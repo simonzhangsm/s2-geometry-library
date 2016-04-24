@@ -20,6 +20,8 @@ using std::ostream;
 using std::cout;
 using std::endl;
 
+#include <sstream>
+
 #include "base/macros.h"
 
 // Always-on checking
@@ -42,13 +44,13 @@ using std::endl;
 #define DCHECK_GE(val1, val2) CHECK_GE(val1, val2)
 #define DCHECK_GT(val1, val2) CHECK_GT(val1, val2)
 #else
-#define DCHECK(condition) CHECK(false)
-#define DCHECK_EQ(val1, val2) CHECK(false)
-#define DCHECK_NE(val1, val2) CHECK(false)
-#define DCHECK_LE(val1, val2) CHECK(false)
-#define DCHECK_LT(val1, val2) CHECK(false)
-#define DCHECK_GE(val1, val2) CHECK(false)
-#define DCHECK_GT(val1, val2) CHECK(false)
+#define DCHECK(condition) CHECK(true)
+#define DCHECK_EQ(val1, val2) CHECK(true)
+#define DCHECK_NE(val1, val2) CHECK(true)
+#define DCHECK_LE(val1, val2) CHECK(true)
+#define DCHECK_LT(val1, val2) CHECK(true)
+#define DCHECK_GE(val1, val2) CHECK(true)
+#define DCHECK_GT(val1, val2) CHECK(true)
 #endif
 
 #define LOG_INFO LogMessage(__FILE__, __LINE__)
@@ -58,7 +60,8 @@ using std::endl;
 #define LOG_FATAL LogMessageFatal(__FILE__, __LINE__)
 #define LOG_QFATAL LOG_FATAL
 
-#define VLOG(x, msg) if ((x)>0) {} else LOG_INFO_MSG(msg).stream()
+#define VLOG(x) if((x)>0){} else LOG_INFO.stream()
+#define VMLOG(x, msg) if ((x)>0){}else LOG_INFO_MSG(msg).stream()
 #ifdef NDEBUG
 #define DEBUG_MODE false
 #define LOG_DFATAL LOG_ERROR
@@ -83,7 +86,7 @@ class DateLogger {
 class LogMessage {
  public:
  LogMessage(const char* file, int line) : m_stream(&(std::cerr)) {
-    std::cerr << "[" << pretty_date_.HumanDate() << "] "
+    (*m_stream) << "[" << pretty_date_.HumanDate() << "] "
               << file << ":" << line << ": ";
   }
   LogMessage(const char* file, int line, std::ostream *msg)
@@ -92,15 +95,15 @@ class LogMessage {
         m_stream = &std::cerr;
     }
     // Don't write metadata if we are not logging to std::cerr.
-    if (m_stream == &std::cerr) {
+    //if (m_stream == &std::cerr) {
         (*m_stream) << "[" << pretty_date_.HumanDate() << "] "
                     << file << ":" << line << ": ";
-    }
+    //}
   }
   ~LogMessage() {
-      if (m_stream == &std::cerr) {
+      //if (m_stream == &std::cerr) {
           (*m_stream) << "\n";
-      }
+      //}
   }
   std::ostream& stream() { return *m_stream; }
 

@@ -72,31 +72,31 @@ file(GLOB UTIL_MATH_HEADERS util/math/*.h)
 add_library(s2util STATIC ${s2util_files})
 target_link_libraries(s2util ${OPENSSL_LIBRARIES})
 
-add_library(s2util.dy SHARED ${s2util_files})
-target_link_libraries(s2util.dy ${OPENSSL_LIBRARIES})
-SET_TARGET_PROPERTIES(s2util.dy PROPERTIES OUTPUT_NAME "s2util") 
-SET_TARGET_PROPERTIES(s2util PROPERTIES CLEAN_DIRECT_OUTPUT 1) 
-SET_TARGET_PROPERTIES(s2util.dy PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+#add_library(s2util.dy SHARED ${s2util_files})
+#target_link_libraries(s2util.dy ${OPENSSL_LIBRARIES})
+#SET_TARGET_PROPERTIES(s2util.dy PROPERTIES OUTPUT_NAME "s2util") 
+#SET_TARGET_PROPERTIES(s2util PROPERTIES CLEAN_DIRECT_OUTPUT 1) 
+#SET_TARGET_PROPERTIES(s2util.dy PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
 add_library(s2cellid STATIC ${s2cellid_files})
 target_link_libraries(s2cellid s2util ${OPENSSL_LIBRARIES})
 
-add_library(s2cellid.dy SHARED ${s2cellid_files})
-target_link_libraries(s2cellid.dy s2util.dy ${OPENSSL_LIBRARIES})
-SET_TARGET_PROPERTIES(s2cellid.dy PROPERTIES OUTPUT_NAME "s2cellid") 
-SET_TARGET_PROPERTIES(s2cellid PROPERTIES CLEAN_DIRECT_OUTPUT 1) 
-SET_TARGET_PROPERTIES(s2cellid.dy PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+#add_library(s2cellid.dy SHARED ${s2cellid_files})
+#target_link_libraries(s2cellid.dy s2util.dy ${OPENSSL_LIBRARIES})
+#SET_TARGET_PROPERTIES(s2cellid.dy PROPERTIES OUTPUT_NAME "s2cellid") 
+#SET_TARGET_PROPERTIES(s2cellid PROPERTIES CLEAN_DIRECT_OUTPUT 1) 
+#SET_TARGET_PROPERTIES(s2cellid.dy PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
 add_library(s2 STATIC ${s2_files})
 target_link_libraries(s2 s2cellid s2util pthread ${OPENSSL_LIBRARIES})
 
-add_library(s2.dy SHARED ${s2_files})
-target_link_libraries(s2.dy s2cellid.dy s2util.dy pthread ${OPENSSL_LIBRARIES})
-SET_TARGET_PROPERTIES(s2.dy PROPERTIES OUTPUT_NAME "s2") 
-SET_TARGET_PROPERTIES(s2 PROPERTIES CLEAN_DIRECT_OUTPUT 1) 
-SET_TARGET_PROPERTIES(s2.dy PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+#add_library(s2.dy SHARED ${s2_files})
+#target_link_libraries(s2.dy s2cellid.dy s2util.dy pthread ${OPENSSL_LIBRARIES})
+#SET_TARGET_PROPERTIES(s2.dy PROPERTIES OUTPUT_NAME "s2") 
+#SET_TARGET_PROPERTIES(s2 PROPERTIES CLEAN_DIRECT_OUTPUT 1) 
+#SET_TARGET_PROPERTIES(s2.dy PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
-install(TARGETS s2util s2cellid s2 s2util.dy s2cellid.dy s2.dy
+install(TARGETS s2util s2cellid s2 #s2util.dy s2cellid.dy s2.dy
 	LIBRARY DESTINATION lib
 	ARCHIVE DESTINATION lib
 )   

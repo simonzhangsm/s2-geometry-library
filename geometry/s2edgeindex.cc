@@ -278,7 +278,7 @@ void S2EdgeIndex::GetEdgesInChildrenCells(
       }
     }
   }
-  VLOG(1, NULL) << "Num cells traversed: " << num_cells;
+  VLOG(1) << "Num cells traversed: " << num_cells;
 }
 
 // Appends to "candidate_crossings" all edge references which may cross the

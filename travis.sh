@@ -14,6 +14,7 @@ if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
 	sudo ldconfig -v | grep libs2
 fi
 
+
 # Build and run the C++ tests
 echo "## Building and running the C++ tests..."
 mkdir tests

@@ -702,7 +702,7 @@ TEST_F(S2PolygonTestBase, PolylineIntersection) {
     for (int i = 0; i < polylines.size(); i++) {
       for (int j = 0; j < polylines[i]->num_vertices() - 1; j++) {
         builder.AddEdge(polylines[i]->vertex(j), polylines[i]->vertex(j + 1));
-        VLOG(3, NULL) << " ... Adding edge: " << polylines[i]->vertex(j) << " - " <<
+        VLOG(3) << " ... Adding edge: " << polylines[i]->vertex(j) << " - " <<
             polylines[i]->vertex(j + 1);
       }
     }
@@ -746,7 +746,7 @@ static void SplitAndAssemble(S2Polygon const* polygon) {
     S2CellUnion covering;
     covering.Init(cells);
     S2Testing::CheckCovering(*polygon, covering, false);
-    VLOG(2, NULL) << cells.size() << " cells in covering";
+    VLOG(2) << cells.size() << " cells in covering";
     vector<S2Polygon*> pieces;
     for (int i = 0; i < cells.size(); ++i) {
       S2Cell cell(cells[i]);
@@ -754,7 +754,7 @@ static void SplitAndAssemble(S2Polygon const* polygon) {
       S2Polygon* piece = new S2Polygon;
       piece->InitToIntersection(polygon, &window);
       pieces.push_back(piece);
-      VLOG(4, NULL) << "\nPiece " << i << ":\n  Window: "
+      VLOG(4) << "\nPiece " << i << ":\n  Window: "
               << S2Testing::ToString(&window)
               << "\n  Piece: " << S2Testing::ToString(piece);
     }
@@ -773,7 +773,7 @@ static void SplitAndAssemble(S2Polygon const* polygon) {
       S2Polygon* c = new S2Polygon;
       c->InitToUnion(a.get(), b.get());
       pieces.push_back(c);
-      VLOG(4, NULL) << "\nJoining piece a: " << S2Testing::ToString(a.get())
+      VLOG(4) << "\nJoining piece a: " << S2Testing::ToString(a.get())
               << "\n  With piece b: " << S2Testing::ToString(b.get())
               << "\n  To get piece c: " << S2Testing::ToString(c);
     }
@@ -830,10 +830,10 @@ TEST(S2Polygon, InitToCellUnionBorder) {
         diagonal = false;
       }
     }
-    VLOG(3, NULL) << iter << ": big_cell " << big_cell <<
+    VLOG(3) << iter << ": big_cell " << big_cell <<
         " small_cell " << small_cell;
     if (diagonal) {
-      VLOG(3, NULL) << "  diagonal - bailing out!";
+      VLOG(3) << "  diagonal - bailing out!";
       continue;
     }
 

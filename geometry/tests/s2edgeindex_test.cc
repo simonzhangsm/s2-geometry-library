@@ -103,7 +103,7 @@ static void TestAllCrossings(vector<S2Edge> const& all_edges,
   double total_crossings = 0;
   double total_index_checks = 0;
 
-  VLOG(1, NULL) << "start detailed checking\n";
+  VLOG(1) << "start detailed checking\n";
   for (int in = 0; in < all_edges.size(); ++in) {
     S2Edge e = all_edges[in];
 
@@ -127,7 +127,7 @@ static void TestAllCrossings(vector<S2Edge> const& all_edges,
     }
   }
 
-  VLOG(1, NULL) << "Pairs/num crossings/check crossing ratio: "
+  VLOG(1) << "Pairs/num crossings/check crossing ratio: "
           << all_edges.size() * all_edges.size() << "/"
           << total_crossings << "/"
           << total_index_checks / total_crossings;

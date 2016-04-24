@@ -509,13 +509,13 @@ TEST(S2Loop, LoopRelations2) {
     if (a.get() && b.get()) {
       bool contained = (a_begin <= b_begin && b_end <= a_end);
       bool intersects = (a_begin < b_end && b_begin < a_end);
-      VLOG(1, NULL) << "Checking " << a->num_vertices() << " vs. "
+      VLOG(1) << "Checking " << a->num_vertices() << " vs. "
               << b->num_vertices() << ", contained = " << contained
               << ", intersects = " << intersects;
       EXPECT_EQ(a->Contains(b.get()), contained);
       EXPECT_EQ(a->Intersects(b.get()), intersects);
     } else {
-      VLOG(1, NULL) << "MakeCellLoop failed to create a loop.";
+      VLOG(1) << "MakeCellLoop failed to create a loop.";
     }
   }
 }

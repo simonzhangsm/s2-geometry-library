@@ -20,7 +20,7 @@ using std::numeric_limits;
 
 #include "base/integral_types.h"
 #include "base/logging.h"
-#include <openssl/crypto.h>
+#include "openssl/crypto.h"
 
 // Define storage for constants.
 const int ExactFloat::kMinExp;

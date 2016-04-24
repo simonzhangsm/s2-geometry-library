@@ -92,16 +92,16 @@ void S2Loop::Init(vector<S2Point> const& vertices) {
   InitBound();
 }
 
-bool S2Loop::IsValid() const {
+bool S2Loop::IsValid(std::ostringstream *msg) const {
   // Loops must have at least 3 vertices.
   if (num_vertices() < 3) {
-    VLOG(2, NULL) << "Degenerate loop";
+    VMLOG(2, msg) << "Degenerate loop";
     return false;
   }
   // All vertices must be unit length.
   for (int i = 0; i < num_vertices(); ++i) {
     if (!S2::IsUnitLength(vertex(i))) {
-      VLOG(2, NULL) << "Vertex " << i << " is not unit length";
+      VMLOG(2, msg) << "Vertex " << i << " is not unit length";
       return false;
     }
   }
@@ -109,7 +109,7 @@ bool S2Loop::IsValid() const {
   unordered_map<S2Point, int> vmap;
   for (int i = 0; i < num_vertices(); ++i) {
     if (!vmap.insert(make_pair(vertex(i), i)).second) {
-      VLOG(2, NULL) << "Duplicate vertices: " << vmap[vertex(i)] << " and " << i;
+      VMLOG(2, msg) << "Duplicate vertices: " << vmap[vertex(i)] << " and " << i;
       return false;
     }
   }
@@ -132,12 +132,12 @@ bool S2Loop::IsValid() const {
         crosses = crosser.RobustCrossing(&vertex(ai+1)) > 0;
         previous_index = ai + 1;
         if (crosses) {
-          VLOG(2, NULL) << "Edges " << i << " and " << ai << " cross";
+          VMLOG(2, msg) << "Edges " << i << " and " << ai << " cross";
           // additional debugging information:
-          VLOG(2, NULL) << "Edge locations in degrees: "
-                  << S2LatLng(vertex(i)) << "-" << S2LatLng(vertex(i+1))
-                  << " and "
-                  << S2LatLng(vertex(ai)) << "-" << S2LatLng(vertex(ai+1));
+          //VLOG(2, msg) << "Edge locations in degrees: "
+          //        << S2LatLng(vertex(i)) << "-" << S2LatLng(vertex(i+1))
+          //        << " and "
+          //        << S2LatLng(vertex(ai)) << "-" << S2LatLng(vertex(ai+1));
           break;
         }
       }
@@ -273,7 +273,7 @@ int S2Loop::FindVertex(S2Point const& p) const {
 }
 
 
-bool S2Loop::IsNormalized(std::stringstream *msg) const {
+bool S2Loop::IsNormalized(std::ostringstream *msg) const {
   /// Optimization: if the longitude span is less than 180 degrees, then the
   /// loop covers less than half the sphere and is therefore normalized.
   if (bound_.lng().GetLength() < M_PI) return true;
