@@ -74,12 +74,12 @@ class S2Polygon : public S2Region {
 
   // Return true if the given loops form a valid polygon.  Assumes that
   // all of the given loops have already been validated.
-  static bool IsValid(const vector<S2Loop*>& loops, std::ostringstream *msg = NULL);
+  static bool IsValid(const vector<S2Loop*>& loops, std::stringstream *msg = NULL);
 
   // Return true if this is a valid polygon.  Note that in debug mode,
   // validity is checked at polygon creation time, so IsValid() should always
   // return true.
-  bool IsValid(std::ostringstream *msg = NULL) const;
+  bool IsValid(std::stringstream *msg = NULL) const;
 
   // DEPRECATED.
   bool IsValid(bool check_loops, int max_adjacent) const;

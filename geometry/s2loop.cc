@@ -92,7 +92,7 @@ void S2Loop::Init(vector<S2Point> const& vertices) {
   InitBound();
 }
 
-bool S2Loop::IsValid(std::ostringstream *msg) const {
+bool S2Loop::IsValid(std::stringstream *msg) const {
   // Loops must have at least 3 vertices.
   if (num_vertices() < 3) {
     VMLOG(2, msg) << "Degenerate loop";
@@ -273,7 +273,7 @@ int S2Loop::FindVertex(S2Point const& p) const {
 }
 
 
-bool S2Loop::IsNormalized(std::ostringstream *msg) const {
+bool S2Loop::IsNormalized(std::stringstream *msg) const {
   /// Optimization: if the longitude span is less than 180 degrees, then the
   /// loop covers less than half the sphere and is therefore normalized.
   if (bound_.lng().GetLength() < M_PI) return true;

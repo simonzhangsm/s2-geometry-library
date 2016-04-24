@@ -118,7 +118,7 @@ template<> struct hash<S2PointPair> {
 }  // namespace std
 
 
-bool S2Polygon::IsValid(const vector<S2Loop*>& loops, std::ostringstream *msg) {
+bool S2Polygon::IsValid(const vector<S2Loop*>& loops, std::stringstream *msg) {
   // If a loop contains an edge AB, then no other loop may contain AB or BA.
   if (loops.size() > 1) {
     unordered_map<S2PointPair, pair<int, int> > edges;
@@ -159,7 +159,7 @@ bool S2Polygon::IsValid(const vector<S2Loop*>& loops, std::ostringstream *msg) {
   return true;
 }
 
-bool S2Polygon::IsValid(std::ostringstream *msg) const {
+bool S2Polygon::IsValid(std::stringstream *msg) const {
   for (int i = 0; i < num_loops(); ++i) {
     if (!loop(i)->IsValid(msg)) {
       return false;

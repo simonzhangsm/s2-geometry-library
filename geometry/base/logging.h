@@ -61,7 +61,7 @@ using std::endl;
 #define LOG_QFATAL LOG_FATAL
 
 #define VLOG(x) if((x)>0){} else LOG_INFO.stream()
-#define VMLOG(x, msg) if ((x)>0){}else LOG_INFO_MSG(msg).stream()
+#define VMLOG(x, msg) if (((msg) == NULL) && ((x)>0)){}else LOG_INFO_MSG(msg).stream()
 #ifdef NDEBUG
 #define DEBUG_MODE false
 #define LOG_DFATAL LOG_ERROR

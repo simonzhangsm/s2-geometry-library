@@ -81,7 +81,7 @@ class S2Loop : public S2Region {
   /// should always return true.  For OceanDB, polygons are created by the
   /// Java code, and are the data provided by the user.  Consequently this
   /// may return false.
-  bool IsValid(std::ostringstream *msg = NULL) const;
+  bool IsValid(std::stringstream *msg = NULL) const;
 
 
   // These two versions are deprecated and ignore max_adjacent.
@@ -124,7 +124,7 @@ class S2Loop : public S2Region {
   /// handled consistently with S2::RobustCCW(), i.e., if a loop can be
   /// expressed as the union of degenerate or nearly-degenerate CCW triangles,
   /// then it will always be considered normalized.
-  bool IsNormalized(std::ostringstream *msg = NULL) const;
+  bool IsNormalized(std::stringstream *msg = NULL) const;
 
   // Invert the loop if necessary so that the area enclosed by the loop is at
   // most 2*Pi.
